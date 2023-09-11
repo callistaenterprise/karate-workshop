@@ -1,0 +1,10 @@
+basicConstraints=CA:FALSE
+nsCertType = server
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = keyEncipherment,digitalSignature
+extendedKeyUsage = serverAuth
+subjectAltName=@alt_names
+[alt_names]
+DNS.1 = localhost
+DNS.2 = host.docker.internal

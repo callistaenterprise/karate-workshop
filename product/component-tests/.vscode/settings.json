@@ -1,0 +1,4 @@
+{
+    "karateRunner.karateCli.overrideKarateRunner" : true,
+    "java.configuration.updateBuildConfiguration" : "interactive"
+}

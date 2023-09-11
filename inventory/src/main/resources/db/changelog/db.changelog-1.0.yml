@@ -1,0 +1,40 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: inventory
+      author: beskow
+      changes:
+        - createTable:
+            tableName: inventory
+            columns:
+              - column:
+                  name: sku
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: inventory_pkey
+              - column:
+                  name: version
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+              - column:
+                  name: stock
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: inventory_test_data
+      author: beskow
+      changes:
+        - insert:
+            tableName: inventory
+            columns:
+              - column:
+                  name: sku
+                  value: sku1
+              - column:
+                  name: stock
+                  value: 1

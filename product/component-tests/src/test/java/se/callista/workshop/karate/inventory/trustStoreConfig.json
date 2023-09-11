@@ -1,0 +1,5 @@
+{
+    "trustStore": "classpath:/certs/truststore.jks",
+    "trustStorePassword": "secret",
+    "trustStoreType": "jks"
+}

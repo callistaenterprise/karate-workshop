@@ -1,0 +1,5 @@
+{
+    "keyStore": "classpath:/certs/client.jks",
+    "keyStorePassword": "secret",
+    "keyStoreType": "jks"
+}

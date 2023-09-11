@@ -1,0 +1,54 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: product
+      author: beskow
+      changes:
+        - createSequence:
+            dbms: postgres
+            sequenceName: product_seq
+            startValue: 100000
+            incrementBy: 50
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: product_pkey
+              - column:
+                  name: version
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                  defaultValueNumeric: 0
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sku
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+  - changeSet:
+      id: product_test_data
+      author: beskow
+      changes:
+        - insert:
+            tableName: product
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Product 1
+              - column:
+                  name: sku
+                  value: sku1

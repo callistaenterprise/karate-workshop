@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>se.callista.workshop.karate</groupId>
+  <artifactId>localhost-test-pki</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>localhost-test-pki</name>
+  <description>localhost test pki</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/main/resources/certs</directory>
+              <includes>
+                <include>**</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>generate-ca</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>bash</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>./src/main/bash/generate-ca.sh</argument>
+                <argument>localCA</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-server</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>bash</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>./src/main/bash/generate-cert.sh</argument>
+                <argument>server</argument>
+                <argument>localCA</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-client</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>bash</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <executable>./src/main/bash/generate-cert.sh</executable>
+                <argument>client</argument>
+                <argument>localCA</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>certs/localCA.key</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>skip</id>
+      <activation>
+        <file>
+          <exists>src/main/resources/certs</exists>
+        </file>
+      </activation>
+      <properties>
+        <exec.skip>true</exec.skip>
+      </properties>
+    </profile>
+  </profiles>
+</project>

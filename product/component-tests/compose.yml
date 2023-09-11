@@ -1,0 +1,41 @@
+services:
+  activemq:
+    image: symptoma/activemq:latest
+    ports:
+      - 61616:61616
+      - 8161:8161
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: product
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d product" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  inventory:
+    image: karate:1.4.0
+    ports:
+      - 9443:9443
+    volumes:
+      - ./src/test/java/se/callista/workshop/karate/inventory:/opt/karate/inventory
+    environment:
+      KARATE_OPTS: "-m ./inventory/InventoryMock.feature -p 9443 -s -c ./certs/server.crt -k ./certs/server.key"
+  product:
+    image: product:1.0.0
+    ports:
+      - 8443:8443
+    restart: always
+    environment:
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/product
+      INVENTORY_URL: https://host.docker.internal:9443/inventory/
+    depends_on:
+      - activemq
+      - postgres
+      - inventory

@@ -1,0 +1,36 @@
+server:
+  port: 9443
+  ssl:
+    bundle: "server"
+    client-auth: want
+spring:
+  activemq:
+    broker-url: tcp://localhost:61616
+    packages:
+      trust-all: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inventory
+    username: admin
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  liquibase:
+    enabled: true
+    changeLog: classpath:db/changelog/db.changelog.yml
+  ssl:
+    bundle:
+      jks:
+        server:
+          key:
+            alias: "server"
+          keystore:
+            location: "classpath:certs/server.jks"
+            password: "secret"
+            type: "JKS"
+          truststore:
+            location: "classpath:certs/truststore.jks"
+            password: "secret"
+            type: "JKS"
+

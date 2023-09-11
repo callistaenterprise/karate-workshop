@@ -1,0 +1,43 @@
+services:
+  activemq:
+    image: symptoma/activemq:latest
+    ports:
+      - 61616:61616
+      - 8161:8161
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - ./init-database.sql:/docker-entrypoint-initdb.d/init-database.sql
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  inventory:
+    image: inventory:1.0.0
+    ports:
+      - 9443:9443
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/inventory
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+  product:
+    image: product:1.0.0
+    ports:
+      - 8443:8443
+    restart: always
+    environment:
+      SPRING_ACTIVEMQ_BROKER_URL: tcp://activemq:61616
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/product
+      INVENTORY_URL: https://host.docker.internal:9443/inventory/
+    depends_on:
+      - activemq
+      - postgres
+      - inventory

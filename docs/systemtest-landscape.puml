@@ -1,0 +1,28 @@
+@startuml
+
+package "Product" {
+  ProductService - [Product]
+}
+
+database "Postgres" as postgres1 {
+  [Products]
+  [Stock]
+}
+
+queue replenish
+
+queue stocklevel
+
+package "Inventory" {
+  InventoryService - [Inventory]
+}
+
+[Product] --> [Products]
+[Product] --> [InventoryService]
+[Product] --> [replenish]
+
+[Inventory] --> [Stock]
+[Inventory] <-- [replenish]
+[Inventory] --> [stocklevel]
+
+@enduml
