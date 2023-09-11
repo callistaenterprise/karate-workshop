@@ -16,8 +16,9 @@ Feature: Product contract tests
     Then status 200
     And match response.name == "Product 101"
     And match response.inventory == '#number'
-    # TODO verify there is a single request to the inventory mock
-    # with the correct uri
+    Given def mockRequests = getMockRequests(inventory_mock_url)
+    Then match mockRequests == '#[1]'
+    And match mockRequests[0].uri == '/inventory/sku101'
 
   Scenario: create product
     Given path '/products/'
