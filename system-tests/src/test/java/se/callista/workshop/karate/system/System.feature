@@ -12,7 +12,9 @@ Feature: Product system tests
   Scenario: get existing product
     Given url product_url
     And path '/products/sku1'
-    #TODO
+    When method get
+    Then status 200
+    And match response == {"productId":1,"name":"Product 1","sku":"sku1","inventory":1}
 
   Scenario: create product
     Given url product_url
