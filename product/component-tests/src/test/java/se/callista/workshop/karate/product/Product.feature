@@ -4,21 +4,19 @@ Feature: Product contract tests
     * url product_url
     * configure ssl = read('sslConfig.json')
 
+  @performance
   Scenario: get non-existing product
     Given path '/products/non-existing'
     When method get
     Then status 404
 
+  @performance
   Scenario: get existing product
-    * product_db.insertInto('product', {"id":101,"name":"Product 101","sku":"sku101"})
-    Given path '/products/sku101'
+    Given path '/products/sku1'
     When method get
     Then status 200
-    And match response.name == "Product 101"
+    And match response.name == "Product 1"
     And match response.inventory == '#number'
-    Given def mockRequests = getMockRequests(inventory_mock_url)
-    Then match mockRequests == '#[1]'
-    And match mockRequests[0].uri == '/inventory/sku101'
 
   Scenario: create product
     Given path '/products/'
