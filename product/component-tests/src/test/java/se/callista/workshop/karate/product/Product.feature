@@ -30,13 +30,15 @@ Feature: Product contract tests
     When method get
     Then status 200
     And match response == read('response/new.json')
-    # TODO verify there is a single message on the replenish queue,
-    # with the correct sku and stock = -1
+    Given json message = replenish_queue.waitForMessage()
+    Then match message == {"sku":"new","stock":0}
+    And assert replenish_queue.size() == 1
 
   Scenario: deleteProduct
     * product_db.insertInto('product', {"id":101,"name":"Product 101","sku":"sku101"})
     Given path '/products/sku101'
     When method delete
     Then status 204
-    # TODO verify there is a single message on the replenish queue,
-    # with the correct sku and stock = -1
+    Given json message = replenish_queue.waitForMessage()
+    Then match message == {"sku":"sku101","stock":-1}
+    And assert replenish_queue.size() == 1
