@@ -1,0 +1,6 @@
+{
+    "productId":#number,
+    "name":"a new product",
+    "sku":"new",
+    "inventory":0
+}
